@@ -4,13 +4,19 @@ from math import sqrt, ceil
 dataset = []
 counter = 0
 correct = wrong = 0
+tp = fp = fn = tn = 0
+correctSum = 0.0
+prec = rec = 0.0
 
 
 def main():
     readFile()
     # FoldDataset()
     crossValidation()
-    Accuracy()
+    Accuracy(correctSum, 10, 2)
+    precision()
+    recall()
+    f_measure()
 
 
 def readFile():
@@ -50,6 +56,7 @@ def FoldDataset(train, test, index):
 def knnAlgo(train, test):
     predict = []
     c = 0
+    right = 0
     for i in test:
         dist_cls = []
 
@@ -72,26 +79,65 @@ def knnAlgo(train, test):
                 cls2 += 2
 
         Acls = int(i[3])
-        global correct, wrong
 
         if cls1 > cls2:
             predict.append([Acls, 1])
         else:
             predict.append([Acls, 2])
 
-        #print(predict[c][0], " ", predict[c][1])
-        if predict[c][0] == predict[c][1]:
-            correct += 1
+        global correct, wrong, tp, fp, tn, fn
 
+        # Let's assume class value:1 -> positive    class value:2 -> negative
+        # predict[c][0] -> Actual class     predict[c][1] -> Predicted class
+
+        if predict[c][0] == predict[c][1] == 1:
+            correct += 1
+            right += 1
+            tp += 1
+        elif predict[c][0] == predict[c][1] == 2:
+            correct += 1
+            right += 1
+            tn += 1
+        elif predict[c][0] == 2 and predict[c][1] == 1:
+            fp += 1
+        elif predict[c][0] == 1 and predict[c][1] == 2:
+            fn += 1
         c += 1
 
+    Accuracy(right, ceil(counter / 10.0), 1)
 
-def Accuracy():
-    print("correct: ", correct, "\ttotal data: ", counter)
-    result = float(correct * 100.0 / counter)
+
+
+def Accuracy(ctotal, n, flag):
+    if flag == 1:
+        print("Total correct prediction: ", ctotal, "\tnumber of data: ", n)
+        result = float(ctotal * 100.0 / n)
+        global correctSum
+        correctSum += result
+    else:
+        print("Total accuracy of 10 folds: ", ctotal, "\tnumber of data: ", n)
+        result = float(ctotal / n)
+
     print(result)
     print("Accuracy of prediction: %.2f%%" % result)
 
 
+def precision():
+    global prec
+    prec = float(tp / (tp + fp))
+    print("Precision: %.3f" % prec)
+
+
+def recall():
+    global rec
+    rec = float(tp / (tp + fn))
+    print("Recall: %.3f" % rec)
+
+
+def f_measure():
+    f = 2 * (prec * rec / (prec + rec))
+    print("F-measure: %.3f" % f)
+
+
 if __name__ == '__main__':
-	main()
+    main()
