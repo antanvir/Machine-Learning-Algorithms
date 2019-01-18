@@ -90,7 +90,7 @@ def calculateRatio(file):
 def makeMask():
 	# To run the full functionality, you can use the 'value' list to compare with threshold.
 	# I only ran this makeMask() function, commenting readMaskFile() & calculateRatio() function.
-	# Threshold value I,ve taken is 0.30
+	# Threshold value I've taken is 0.30
 	rat = [[[0 for x in range(256)]for y in range(256)] for z in range(256)]
 
 	file1 = open('pixelRatioFinal.txt', 'r')
