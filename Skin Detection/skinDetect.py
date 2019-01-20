@@ -11,7 +11,7 @@ def main():
 	fl = open("imageData.txt", "r")
 	calculateRatio(fl)
 	fl.close()
-
+	
 	makeMask()
 
 
@@ -71,6 +71,8 @@ def calculateRatio(file):
 				ratio = 0.0
 				if nonSkin[x][y][z] != 0:
 					ratio = float(skin[x][y][z] / nonSkin[x][y][z])
+				elif skin[x][y][z] == nonSkin[x][y][z] == 0:
+					ratio = 0.0
 				else:
 					ratio = 1.0
 				#file1.write(str(skin[x][y][z])+ " "+ str(nonSkin[x][y][z])+ "\n")
@@ -90,7 +92,7 @@ def calculateRatio(file):
 def makeMask():
 	# To run the full functionality, you can use the 'value' list to compare with threshold.
 	# I only ran this makeMask() function, commenting readMaskFile() & calculateRatio() function.
-	# Threshold value I've taken is 0.30
+	# Threshold value I,ve taken is 0.30
 	rat = [[[0 for x in range(256)]for y in range(256)] for z in range(256)]
 
 	file1 = open('pixelRatioFinal.txt', 'r')
@@ -108,7 +110,7 @@ def makeMask():
 
 
 	#im = Image.open("C:\\Users\\antan\\Desktop\\5th Semester\\watson.jpg")
-	im1 = Image.open("C:\\Users\\antan\\Desktop\\5th Semester\\Web Tech\\ant.jpg")
+	im1 = Image.open("C:\\Users\\antan\\Desktop\\5th Semester\\pic.jpg")
 	#pix = im.load()
 	pix = im1.load()
 	width, height = im1.size
@@ -119,7 +121,7 @@ def makeMask():
 	        	pix[x,y] = (255, 255, 255)
 
 	#im.save("watson.bmp", "BMP")
-	im1.save("ant.bmp", "BMP")
+	im1.save("k.bmp", "BMP")
 
 
 
