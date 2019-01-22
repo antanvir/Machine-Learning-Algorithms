@@ -7,6 +7,8 @@ correct = wrong = 0
 tp = fp = fn = tn = 0
 correctSum = 0.0
 prec = rec = 0.0
+elements = 0
+binary = None
 
 
 def main():
@@ -14,24 +16,40 @@ def main():
     # FoldDataset()
     crossValidation()
     Accuracy(correctSum, 10, 2)
-    precision()
-    recall()
-    f_measure()
+    if binary == True:
+        precision()
+        recall()
+        f_measure()
 
 
 def readFile():
+    # file = open("caesarian - Copy.txt", "r+")
     file = open("haberman.data", "r+")
     fullData = file.readlines()
-
+    classes = []
     for line in fullData:
         line = line.split(',')
-        dataset.append(line)
+        global elements
         global counter
+        if counter == 0:
+            elements = len(line)
+        # print(elements)
+        # print()
+        dataset.append(line)
+        if line[elements - 1] not in classes:
+            classes.append(line[elements - 1])
+        # global counter
         counter += 1
+
+    global binary
+    if len(classes) == 2:
+        binary = True
+    else:
+        binary = False
 
 
 def crossValidation():
-    seed(4)
+    seed(90)
 
     for _ in range(0, 10):
         test = []
@@ -61,13 +79,21 @@ def knnAlgo(train, test):
         dist_cls = []
 
         for j in train:
+            dst = 0
+            global elements
+            for x in range(0, elements-1):
+                dst += ( int(i[x]) - int(j[x]) )**2
+
+            dstnc = round(sqrt(dst), 3)
+            '''
             x = int(i[0]) - int(j[0])
             y = int(i[1]) - int(j[1])
             z = int(i[2]) - int(j[2])
             dst = round(sqrt(x * x + y * y + z * z), 3)
+            '''
             Tcls = int(j[3])
             Acls = int(i[3])
-            dist_cls.append([dst, Acls, Tcls])
+            dist_cls.append([dstnc, Acls, Tcls])
 
         dist_cls.sort()
         cls1 = cls2 = 0
@@ -85,23 +111,27 @@ def knnAlgo(train, test):
         else:
             predict.append([Acls, 2])
 
-        global correct, wrong, tp, fp, tn, fn
-
-        # Let's assume class value:1 -> positive    class value:2 -> negative
-        # predict[c][0] -> Actual class     predict[c][1] -> Predicted class
-
-        if predict[c][0] == predict[c][1] == 1:
-            correct += 1
+        if predict[c][0] == predict[c][1]:
             right += 1
-            tp += 1
-        elif predict[c][0] == predict[c][1] == 2:
-            correct += 1
-            right += 1
-            tn += 1
-        elif predict[c][0] == 2 and predict[c][1] == 1:
-            fp += 1
-        elif predict[c][0] == 1 and predict[c][1] == 2:
-            fn += 1
+
+        if binary == True:
+            global correct, wrong, tp, fp, tn, fn
+
+            # Let's assume class value:1 -> positive    class value:2 -> negative
+            # predict[c][0] -> Actual class     predict[c][1] -> Predicted class
+
+            if predict[c][0] == predict[c][1] == 1:
+                correct += 1
+                # right += 1
+                tp += 1
+            elif predict[c][0] == predict[c][1] == 2:
+                correct += 1
+                # right += 1
+                tn += 1
+            elif predict[c][0] == 2 and predict[c][1] == 1:
+                fp += 1
+            elif predict[c][0] == 1 and predict[c][1] == 2:
+                fn += 1
         c += 1
 
     Accuracy(right, ceil(counter / 10.0), 1)
@@ -141,3 +171,4 @@ def f_measure():
 
 if __name__ == '__main__':
     main()
+
