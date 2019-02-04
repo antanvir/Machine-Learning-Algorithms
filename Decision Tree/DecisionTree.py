@@ -32,8 +32,8 @@ def entropyInDataset(dataset, classes):
         occurences = [int(row[-1]) for row in dataset].count(value)
         print(occurences)
         probability = occurences / totalData
-        print(probability)
-        print(math.log2(probability))
+        #print(probability)
+        #print(math.log2(probability))
         entropy += (-probability * math.log2(probability))
         print(entropy)
     return entropy
@@ -48,10 +48,10 @@ def splitData(dataset, initialEntropy):
         for index in range(indices - 1):
             leftSet, rightSet = getTwoSet(dataset, index, float(row[index]))
 
-    print(leftSet)
-    print()
-    print(rightSet)
-    return root = None
+    root = None
+    return root
+
+
     
 def getTwoSet(dataset, index, indexValue):
     leftSet, rightSet = list(), list()
