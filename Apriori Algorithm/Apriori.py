@@ -7,9 +7,6 @@ def main():
 
 
 
-
-
-
 def readFile():
 	file = open("transactions.txt", "r+")
 	dataset = list()
@@ -26,8 +23,6 @@ def readFile():
 	
 
 
-
-
 def apriori(dataset):
 	threshold = 2
 	resultLevel = list()
@@ -35,22 +30,16 @@ def apriori(dataset):
 
 	candidate = find_frequent_1_itemsets(dataset)
 	Level, L_count = SupportCounter(dataset, candidate, threshold)
-	print(L_count)
-	print(Level)
+	#print(L_count)
+	#print(Level)
 
-	#while Level:
-	candidate = candidate_gen(Level, 2)
-	print(candidate)
-	Level, L_count = SupportCounter(dataset, candidate, threshold)
-	print(L_count)
-	print(Level)
-
-	candidate = candidate_gen(Level, 3)
-	print(candidate)
-	Level, L_count = SupportCounter(dataset, candidate, threshold)
-	print(L_count)
-	print(Level)
-
+	while Level:
+		print(L_count)
+		print(Level)
+		candidate = candidate_gen(Level)
+		#print(candidate)
+		Level, L_count = SupportCounter(dataset, candidate, threshold)
+		
 
 
 	return resultLevel, resultCounter
@@ -84,7 +73,7 @@ def SupportCounter(dataset, L, threshold):
 
 
 
-def candidate_gen(L, k):
+def candidate_gen(L):
 	candidate = set()
 
 
