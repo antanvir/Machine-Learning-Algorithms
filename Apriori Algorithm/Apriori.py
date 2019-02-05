@@ -45,6 +45,12 @@ def apriori(dataset):
 	print(L_count)
 	print(Level)
 
+	candidate = candidate_gen(Level, 3)
+	print(candidate)
+	Level, L_count = SupportCounter(dataset, candidate, threshold)
+	print(L_count)
+	print(Level)
+
 
 
 	return resultLevel, resultCounter
@@ -71,7 +77,7 @@ def SupportCounter(dataset, L, threshold):
 		if count >= threshold:
 			counter.append(count)
 			Level.append(a)
-	print(counter)
+	#print(counter)
 	return Level, counter
 
 
@@ -88,8 +94,14 @@ def candidate_gen(L, k):
 			#new = L[i]|L[j]
 			itemsI = L[i].split(",")
 			itemsJ = L[j].split(",")
-			if [itemsI[x] == itemsJ[x] for x in range(len(itemsI))]:
-				new = L[i] + "," + L[j]
+			#if [itemsI[x] == itemsJ[x] for x in range(len(itemsI)-1)]:
+			flag = 1
+			for x in range(len(itemsI)-1):
+				if itemsI[x] != itemsJ[x]:
+					flag = 0
+
+			if flag:
+				new = L[i] + "," + itemsJ[-1]
 				candidate.add(new)
 
 	return list(sorted(candidate))
