@@ -6,8 +6,8 @@ def main():
     L1 = find_frequent_1_itemsets(dataset)
     ItemsetsLevel, ItemsetsCounter = apriori(dataset)
     Print(ItemsetsLevel, ItemsetsCounter)
-    given, conFor = Input()
-    Confidence(ItemsetsLevel, ItemsetsCounter, given, conFor)
+    given, conValue = Input()
+    Confidence(ItemsetsLevel, ItemsetsCounter, given, conValue)
 
 
 def readFile():
@@ -136,26 +136,25 @@ def Input():
     if ans == "y":
         given = input("Given? (Format: I1,I2)\n")
         conFor = input("Confidence For? (Format: I5)\n")
-        return given, conFor
-    else:
-        print("==SPECIFIED ITEMS ARE INFREQUENT==")
+        givenList = given.split(DELIMITER)
+        conForList = conFor.split(DELIMITER)
+
+        conValueList = list()
+        conValueList.extend(givenList)
+        conValueList.extend(conForList)
+        conValueList = sorted(conValueList)
+
+        conValue = ""
+        for i in range(len(conValueList)):
+        	conValue += conValueList[i]
+        	if i != len(conValueList) - 1:
+        		conValue += DELIMITER
+
+        return given, conValue
 
 
-def Confidence(Level, counter, given, conFor):
-    givenList = given.split(DELIMITER)
-    conForList = conFor.split(DELIMITER)
 
-    conValueList = list()
-    conValueList.extend(givenList)
-    conValueList.extend(conForList)
-    conValueList = sorted(conValueList)
-
-    conValue = ""
-    for i in range(len(conValueList)):
-        conValue += conValueList[i]
-        if i != len(conValueList) - 1:
-            conValue += DELIMITER
-
+def Confidence(Level, counter, given, conValue):
     flagG, flagV = False, False
     countG, countV = 0, 0
     for i in range(len(Level)):
@@ -171,8 +170,9 @@ def Confidence(Level, counter, given, conFor):
 
     if flagG and flagV:
         confidence = (countV / countG) * 100.0
-        print("Confidence of {0} GIVEN {1} : {2:.2f}%" .format(
-            conFor, given, float(confidence)))
+        print("Confidence of {0} GIVEN {1} : {2:.2f}%" .format(conValue, given, float(confidence)))
+    else:
+    	print("==SPECIFIED ITEMS ARE INFREQUENT==")
 
 
 if __name__ == '__main__':
