@@ -148,11 +148,32 @@ def Print(Level, counter):
 
 def Confidence(Level, counter):
 	ans = input("Want to find confidence? (y/n)\n")
-	if ans == "y":
+	if ans   == "y":
 		given = input("Given? (Format: I1,I2)\n")
-		conFor = input("Confidence for? (Format: I5)\n")
+		conFor = input("Confidence For? (Format: I5)\n")
 
-		print(given, conFor)
+		conValue = given + "," + conFor
+
+		flagG, flagV = False, False
+		countG, countV = 0, 0
+		for i in range(len(Level)):
+			if given in Level[i]:
+				flagG = True
+				countG = None
+			if conValue in Level[i]:
+				flagV = True
+				countV = None
+
+			if flagG and flagV:
+				break
+
+		if flagG and flagV:
+			#Calculate
+		else:
+			#prompt
+
+
+
 
 
 
