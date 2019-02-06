@@ -1,9 +1,8 @@
 def main():
 	dataset = readFile()
-	#print(dataset)
 	L1 = find_frequent_1_itemsets(dataset)
-	#L1Counter = SupportCounter(dataset, L1, 2)
-	Itemsets = apriori(dataset)
+	ItemsetsLevel, ItemsetsCounter = apriori(dataset)
+	Print(ItemsetsLevel, ItemsetsCounter)
 
 
 
@@ -12,11 +11,9 @@ def readFile():
 	dataset = list()
 	while True:
 		line = file.readline().strip()
-		#line = line.strip()
 		item = line.split(" ")
 		if not line:
 			break
-		#print(line)
 		dataset.append(item[1])
 
 	return dataset
@@ -29,23 +26,24 @@ def apriori(dataset):
 	resultCounter = list()
 
 	candidate = find_frequent_1_itemsets(dataset)
-	Level, L_count = SupportCounter(dataset, candidate, threshold)
-	#print(L_count)
-	#print(Level)
+	Level, L_count = has_Minimum_Support_Counter(dataset, candidate, threshold)
+	resultLevel.append(Level)
+	resultCounter.append(L_count)
+
 
 	while Level:
-		print(L_count)
-		print(Level)
-		candidate = candidate_gen(Level)
-		#print(candidate)
-		Level, L_count = SupportCounter(dataset, candidate, threshold)
-		
+		candidate = candidate_generator(Level)
+		candidate = has_frequent_subset(candidate, Level)
+		Level, L_count = has_Minimum_Support_Counter(dataset, candidate, threshold)
+
+		resultLevel.append(Level)
+		resultCounter.append(L_count)
 
 
 	return resultLevel, resultCounter
 
 
-def SupportCounter(dataset, L, threshold):
+def has_Minimum_Support_Counter(dataset, L, threshold):
 	counter = list()
 	Level = list()
 	for a in L:
@@ -66,24 +64,50 @@ def SupportCounter(dataset, L, threshold):
 		if count >= threshold:
 			counter.append(count)
 			Level.append(a)
-	#print(counter)
 	return Level, counter
 
 
+def has_frequent_subset(candidate, L):
+	toBeDeleted = list()
+
+	for elements in candidate:
+		#print(elements)
+		items = elements.split(",")
+		itemLen = len(items)
+		flag = True
+		for j in range(itemLen):
+			subset = ""
+			c = 1
+			for k in range(itemLen):
+				if j != k:
+					if itemLen - 1 == c:
+						subset += items[k]
+
+					else:
+						subset += items[k] + ","
+						c += 1
+
+			if subset not in L:
+				flag = False
+				break
+
+		if flag == False:
+			toBeDeleted.append(elements)
+
+	candidate = [values for values in candidate if values not in toBeDeleted ]
+	#print("Candidates after:", candidate)
+	return candidate
 
 
 
-def candidate_gen(L):
+def candidate_generator(L):
 	candidate = set()
-
-
 	length = len(L)
+
 	for i in range(length):
 		for j in range(i+1, length):
-			#new = L[i]|L[j]
 			itemsI = L[i].split(",")
 			itemsJ = L[j].split(",")
-			#if [itemsI[x] == itemsJ[x] for x in range(len(itemsI)-1)]:
 			flag = 1
 			for x in range(len(itemsI)-1):
 				if itemsI[x] != itemsJ[x]:
@@ -97,29 +121,28 @@ def candidate_gen(L):
 
 
 
-def has_infrequent_subset(item, L):
-	item = item.split(",")
-	length = len(item)
-
-	for i in range(length):
-		for j in range(i+1, length):
-			return True
-
-
-
-
-
 def find_frequent_1_itemsets(dataset):
 	level1 = set()
 
 	for elements in dataset:
 		items = elements.split(",")
-		#print(len(items))
+
 		for i in range(len(items)):
 			level1.add( items[i] )
 
-	#print(level1)
 	return list(sorted(level1))
+
+
+
+def Print(Level, counter):
+	for i in range(len(Level)):
+		if not Level[i]:
+			break
+		print("Level %d: " % (i+1))
+		print(Level[i])
+		print('========================================')
+		for j in range(len(Level[i])):
+			print("'{0}'\t\t" .format(Level[i][j]), counter[i][j])
 
 
 
