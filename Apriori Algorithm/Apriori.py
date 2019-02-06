@@ -3,6 +3,7 @@ def main():
 	L1 = find_frequent_1_itemsets(dataset)
 	ItemsetsLevel, ItemsetsCounter = apriori(dataset)
 	Print(ItemsetsLevel, ItemsetsCounter)
+	Confidence(ItemsetsLevel, ItemsetsCounter)
 
 
 
@@ -143,6 +144,15 @@ def Print(Level, counter):
 		print('========================================')
 		for j in range(len(Level[i])):
 			print("'{0}'\t\t" .format(Level[i][j]), counter[i][j])
+
+
+def Confidence(Level, counter):
+	ans = input("Want to find confidence? (y/n)\n")
+	if ans == "y":
+		given = input("Given? (Format: I1,I2)\n")
+		conFor = input("Confidence for? (Format: I5)\n")
+
+		print(given, conFor)
 
 
 
