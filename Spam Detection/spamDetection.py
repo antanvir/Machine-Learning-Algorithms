@@ -1,5 +1,5 @@
 from random import randrange, seed
-from math import sqrt, ceil
+from math import sqrt, ceil, log
 
 spamMail, nonspamMail = 0, 0
 pSpamWord = None
@@ -49,8 +49,8 @@ def trainData(dataset):
 			else:
 				nonspamCount += 1
 		
-		pSpamWord[i] = float(spamCount) / (spamCount + nonspamCount)
-		pNonspamWord[i] = float(nonspamCount) / (spamCount + nonspamCount)
+		pSpamWord[i] = (float(spamCount) + 1) / (spamCount + nonspamCount)			# NEED MODIFICATION
+		pNonspamWord[i] = (float(nonspamCount) + 1) / (spamCount + nonspamCount)
 		# print("spam + nonspam: "spamCount + nonspamCount)
 	return pSpamWord, pNonspamWord
 
@@ -86,13 +86,17 @@ def checkTestset(test, pSpamWord, pNonspamWord):
 	for line in test:
 		global spamMail, nonspamMail
 
-		pSpam, pNonspam = 1, 1
+		'''pSpam, pNonspam = 1, 1
 		pSpam *= spamMail
 		pNonspam *= nonspamMail
+		'''
+		pSpam, pNonspam = 0, 0
+		pSpam += log((spamMail + 1) / (spamMail + nonspamMail))
+		pNonspam += log((nonspamMail + 1) / (spamMail + nonspamMail))
 
 		for i in range(len(line) - 1):			
-			pSpam *= pSpamWord[i]
-			pNonspam *= pNonspamWord[i]
+			pSpam += log(pSpamWord[i])
+			pNonspam += log(pNonspamWord[i])
 
 		if pSpam > pNonspam and line[-1] == 1.00:
 			correctlyClassified += 1
