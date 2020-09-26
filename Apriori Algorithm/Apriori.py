@@ -3,11 +3,10 @@ DELIMITER = ","
 
 def main():
     dataset = readFile()
-    L1 = find_frequent_1_itemsets(dataset)
     ItemsetsLevel, ItemsetsCounter = apriori(dataset)
     Print(ItemsetsLevel, ItemsetsCounter)
-    given, conValue = Input()
-    Confidence(ItemsetsLevel, ItemsetsCounter, given, conValue)
+    priorItem, confidenceQueryItem = Input()
+    Confidence(ItemsetsLevel, ItemsetsCounter, priorItem, confidenceQueryItem)
 
 
 def readFile():
@@ -134,45 +133,45 @@ def Print(Level, counter):
 def Input():
     ans = input("Want to find confidence? (y/n)\n")
     if ans == "y":
-        given = input("Given? (Format: I1,I2)\n")
-        conFor = input("Confidence For? (Format: I5)\n")
-        givenList = given.split(DELIMITER)
-        conForList = conFor.split(DELIMITER)
+        priorItem = input("Prior Item? (Format: I1,I2)\n")
+        confidenceQueryItem = input("Confidence Query For? (Format: I4,I5,I6)\n")
+        givenList = priorItem.split(DELIMITER)
+        conForList = confidenceQueryItem.split(DELIMITER)
 
         conValueList = list()
         conValueList.extend(givenList)
         conValueList.extend(conForList)
         conValueList = sorted(conValueList)
 
-        conValue = ""
+        confidenceQueryItem = ""
         for i in range(len(conValueList)):
-        	conValue += conValueList[i]
+        	confidenceQueryItem += conValueList[i]
         	if i != len(conValueList) - 1:
-        		conValue += DELIMITER
+        		confidenceQueryItem += DELIMITER
+        # print("Query: ", confidenceQueryItem)
+        return priorItem, confidenceQueryItem
 
-        return given, conValue
 
 
-
-def Confidence(Level, counter, given, conValue):
-    flagG, flagV = False, False
-    countG, countV = 0, 0
+def Confidence(Level, counter, priorItem, confidenceQueryItem):
+    flagP, flagQ = False, False
+    countP, countQ = 0, 0
     for i in range(len(Level)):
-        if given in Level[i]:
-            flagG = True
-            countG = counter[i] [Level[i].index(given)]
-        if conValue in Level[i]:
-            flagV = True
-            countV = counter[i] [Level[i].index(conValue)]
+        if priorItem in Level[i]:
+            flagP = True
+            countP = counter[i] [Level[i].index(priorItem)]
+        if confidenceQueryItem in Level[i]:
+            flagQ = True
+            countQ = counter[i] [Level[i].index(confidenceQueryItem)]
 
-        if flagG and flagV:
+        if flagP and flagQ:
             break
 
-    if flagG and flagV:
-        confidence = (countV / countG) * 100.0
-        print("Confidence of {0} GIVEN {1} : {2:.2f}%" .format(conValue, given, float(confidence)))
+    if flagP and flagQ:
+        confidence = (countQ / countP) * 100.0
+        print("Confidence of {0} GIVEN {1} : {2:.2f}%" .format(confidenceQueryItem, priorItem, float(confidence)))
     else:
-    	print("==SPECIFIED ITEMS ARE INFREQUENT==")
+    	print("== SPECIFIED ITEMS ARE INFREQUENT ==")
 
 
 if __name__ == '__main__':
