@@ -50,10 +50,10 @@ def has_Minimum_Support_Counter(dataset, L, threshold):
     for a in L:
         count = 0
         items = a.split(DELIMITER)
-        for bought in dataset:
+        for boughtItemsInSingleTransaction in dataset:
             flag = True
             for i in range(len(items)):
-                if items[i] not in bought:
+                if items[i] not in boughtItemsInSingleTransaction:
                     flag = False
                     break
             if flag == True:
@@ -136,6 +136,7 @@ def Input():
         priorItem = input("Prior Item? (Format: I1,I2)\n")
         confidenceQueryItem = input("Confidence Query For? (Format: I4,I5,I6)\n")
         givenList = priorItem.split(DELIMITER)
+        givenList.sort()
         conForList = confidenceQueryItem.split(DELIMITER)
 
         conValueList = list()
@@ -148,7 +149,15 @@ def Input():
         	confidenceQueryItem += conValueList[i]
         	if i != len(conValueList) - 1:
         		confidenceQueryItem += DELIMITER
-        # print("Query: ", confidenceQueryItem)
+
+        priorItem = ""
+        for i in range(len(givenList)):
+        	priorItem += givenList[i]
+        	if i != len(givenList) - 1:
+        		priorItem += DELIMITER
+        
+        print("prior: ", priorItem)
+        print("Query: ", confidenceQueryItem)
         return priorItem, confidenceQueryItem
 
 
@@ -169,7 +178,7 @@ def Confidence(Level, counter, priorItem, confidenceQueryItem):
 
     if flagP and flagQ:
         confidence = (countQ / countP) * 100.0
-        print("Confidence of {0} GIVEN {1} : {2:.2f}%" .format(confidenceQueryItem, priorItem, float(confidence)))
+        print("Confidence of ({0}) GIVEN ({1}) : {2:.2f}%" .format(confidenceQueryItem, priorItem, float(confidence)))
     else:
     	print("== SPECIFIED ITEMS ARE INFREQUENT ==")
 
